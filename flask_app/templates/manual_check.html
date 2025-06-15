@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manual Check{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="text-primary mb-4">Manual Crosscheck</h2>
+
+  {% if source or match_score %}
+    <div class="card shadow-sm p-3 mb-4 border-start border-info border-4">
+      {% if source %}
+        <p class="mb-1"><strong>Matched From:</strong> {{ source }}</p>
+      {% endif %}
+      {% if match_score is not none %}
+        <p class="mb-0"><strong>Fuzzy Match Score:</strong> {{ match_score }}%</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if raw_text %}
+    <div class="card p-4 shadow-sm bg-light mb-4">
+      <h5 class="text-secondary">Extracted Text</h5>
+      <hr>
+      <pre style="white-space: pre-wrap; max-height: 500px; overflow-y: auto;">{{ raw_text }}</pre>
+    </div>
+  {% else %}
+    <div class="alert alert-secondary mt-4 mb-4">
+      No extracted text is available for manual check.
+    </div>
+  {% endif %}
+
+  <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-5">
+    <a href="{{ url_for('upload') }}" 
+       class="btn btn-outline-secondary d-flex align-items-center justify-content-center"
+       style="min-width: 220px; padding: 0.75rem 1.5rem;">
+      <span class="fs-5 me-2">📤</span>
+      <span class="fs-5 fw-medium">Back to Upload</span>
+    </a>
+
+    <a href="{{ url_for('results') }}" 
+       class="btn btn-outline-primary d-flex align-items-center justify-content-center"
+       style="min-width: 220px; padding: 0.75rem 1.5rem;">
+      <span class="fs-5 me-2">📊</span>
+      <span class="fs-5 fw-medium">Back to Results</span>
+    </a>
+
+    <a href="{{ url_for('search') }}" 
+       class="btn btn-outline-success d-flex align-items-center justify-content-center"
+       style="min-width: 220px; padding: 0.75rem 1.5rem;">
+      <span class="fs-5 me-2">🔍</span>
+      <span class="fs-5 fw-medium">Manual Search</span>
+    </a>
+  </div>
+</div>
+{% endblock %}

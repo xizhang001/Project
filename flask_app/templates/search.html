@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Search Institutions{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-primary">Search Institution</h2>
+    <a href="{{ url_for('upload') }}" 
+       class="btn btn-outline-secondary d-flex align-items-center"
+       style="min-width: 220px; padding: 0.75rem 1.5rem;">
+      <span class="fs-5 me-2">📤</span>
+      <span class="fs-5 fw-medium">Upload Documents</span>
+    </a>
+  </div>
+
+  <form method="POST" class="card p-4 shadow-sm mb-4 border-start border-primary border-4">
+    <label for="institution-input" class="form-label">Enter full or partial name of the institution:</label>
+    <input id="institution-input" type="text" name="institution_name"
+           class="form-control form-control-lg mb-4" placeholder="Start typing institution name..." autocomplete="off" required>
+    
+    <div class="text-center">
+      <button type="submit" 
+              class="btn btn-primary btn-lg d-flex align-items-center justify-content-center mx-auto"
+              style="min-width: 220px; padding: 0.75rem 1.5rem;">
+        <span class="fs-5 me-2">🔍</span>
+        <span class="fs-5 fw-medium">Search</span>
+      </button>
+    </div>
+  </form>
+
+  {% if query and not result %}
+    <div class="alert alert-danger">
+      No matching institution found for "<strong>{{ query }}</strong>". Please double-check the name.
+    </div>
+  {% endif %}
+
+  {% if result %}
+    <div class="card mt-4 shadow-sm">
+      <div class="card-header bg-info text-white">Institution Details</div>
+      <div class="card-body">
+        <p><strong>Institution:</strong> {{ result['Name of Institution'] }}</p>
+        <p><strong>City:</strong> {{ result['City'] }}</p>
+        <p><strong>State:</strong> {{ result['State'] }}</p>
+      </div>
+    </div>
+
+    {% if result['Tier 1'] %}
+      <div class="card mt-3 shadow-sm">
+        <div class="card-header bg-success text-white">Tier 1 Rankings</div>
+        <div class="card-body">
+          {% for k, v in result['Tier 1'].items() %}
+            <span class="badge bg-success me-2 mb-2">{{ k }}: {{ v }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if result['Tier 2'] %}
+      <div class="card mt-3 shadow-sm">
+        <div class="card-header bg-warning text-dark">Tier 2 Rankings</div>
+        <div class="card-body">
+          {% for k, v in result['Tier 2'].items() %}
+            <span class="badge bg-warning text-dark me-2 mb-2">{{ k }}: {{ v }}</span>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+<!-- jQuery + jQuery UI for Autocomplete -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+<script>
+  // Highlight matched substring in autocomplete
+  $.widget("custom.autocomplete", $.ui.autocomplete, {
+    _renderItem: function(ul, item) {
+      const re = new RegExp("(" + $.ui.autocomplete.escapeRegex(this.term) + ")", "gi");
+      const label = item.label.replace(re, "<strong>$1</strong>");
+      return $("<li>").append("<div>" + label + "</div>").appendTo(ul);
+    }
+  });
+
+  // Initialize custom autocomplete
+  $(function() {
+    $.getJSON("/institution-names", function(data) {
+      $("#institution-input").autocomplete({
+        source: data,
+        minLength: 2
+      });
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Documents{% endblock %}
+
+{% block content %}
+<div class="container">
+  <!-- Back to Home Button -->
+  <div class="mb-4">
+    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary d-flex align-items-center" style="min-width: 180px; padding: 0.5rem 1.25rem;">
+      <span class="fs-5 me-2">←</span>
+      <span class="fs-5 fw-medium">Back to Home</span>
+    </a>
+  </div>
+
+  <h2 class="mb-4 text-primary">Upload Your Documents</h2>
+
+  <div class="alert alert-info">
+    <strong>Instructions:</strong><br>
+    You may upload any combination of the documents below. The system will prioritise them in this order:
+    <span class="fw-bold text-primary">Transcript → CV → Reference Letter</span>.<br>
+    Optionally, you may upload your own ranking Excel file (format must match our template).
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" onsubmit="showSpinner()">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="transcript" class="form-label">Transcript (PDF, Image)</label>
+        <input class="form-control" type="file" name="transcript" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="cv" class="form-label">CV (PDF, DOCX)</label>
+        <input class="form-control" type="file" name="cv" accept=".pdf,.docx">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="reference" class="form-label">Reference Letter (PDF, Image)</label>
+        <input class="form-control" type="file" name="reference" accept=".pdf,.jpg,.jpeg,.png">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label for="ranking_excel" class="form-label">Custom Ranking Excel (Optional)</label>
+        <input class="form-control" type="file" name="ranking_excel" accept=".xlsx">
+        <div class="form-text text-warning">
+          Must match the format of our official ranking Excel (same columns and sheet name).
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
+      <button type="submit" class="btn btn-primary btn-lg d-flex align-items-center justify-content-center mx-auto" style="min-width: 260px; padding: 0.75rem 1.75rem;">
+        <span class="fs-5 me-2">🚀</span>
+        <span class="fs-5 fw-medium">Check Institution</span>
+      </button>
+    </div>
+  </form>
+
+  <!-- Loading Spinner -->
+  <div id="loading-spinner" class="text-center d-none mt-4">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Processing your documents...</p>
+  </div>
+</div>
+
+<script>
+  function showSpinner() {
+    document.getElementById('loading-spinner').classList.remove('d-none');
+  }
+</script>
+{% endblock %}
